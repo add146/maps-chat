@@ -22,7 +22,7 @@ import cn from 'classnames';
 // FIX: Added missing React imports.
 import React, { memo, useEffect, useRef, useState, FormEvent, Ref } from 'react';
 import { AudioRecorder } from '../lib/audio-recorder';
-import { useLogStore, useUI, useSettings } from '@/lib/state';
+import { useLogStore, useUI, useSettings, useMapStore } from '@/lib/state';
 
 import { useLiveAPIContext } from '../contexts/LiveAPIContext';
 
@@ -259,10 +259,29 @@ function ControlTray({ trayRef }: ControlTrayProps) {
             if (navigator.geolocation) {
               navigator.geolocation.getCurrentPosition(
                 (position) => {
-                  const event = new CustomEvent('centerToLocation', {
-                    detail: { lat: position.coords.latitude, lng: position.coords.longitude }
+                  const coords = { lat: position.coords.latitude, lng: position.coords.longitude };
+                  // Center Map2D to new location
+                  window.dispatchEvent(new CustomEvent('centerToLocation', { detail: coords }));
+                  // Also update Map3D camera
+                  useMapStore.getState().setCameraTarget({
+                    center: {
+                      lat: coords.lat,
+                      lng: coords.lng,
+                      altitude: 500
+                    },
+                    range: 2000,
+                    heading: 0,
+                    tilt: 45,
+                    roll: 0
                   });
-                  window.dispatchEvent(event);
+                  // Disconnect and reconnect agent to refresh with new location
+                  if (connected) {
+                    disconnect();
+                    setTimeout(() => {
+                      connect();
+                      setMuted(false);
+                    }, 500);
+                  }
                 },
                 (error) => {
                   alert('Tidak dapat mengakses lokasi. Pastikan izin lokasi diaktifkan.');
