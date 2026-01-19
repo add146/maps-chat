@@ -290,6 +290,13 @@ gmp-place-details-compact {
   background: white;
 }
 
+/* Full screen map when chat is hidden */
+.map-panel.full-screen {
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
 
 .streaming-console a,
 .streaming-console a:visited,

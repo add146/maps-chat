@@ -31,7 +31,7 @@ import { APIProvider, useMapsLibrary } from '@vis.gl/react-google-maps';
 import { Map3D, Map3DCameraProps } from './components/map-3d';
 import { Map2D } from './components/map-2d';
 import MapToggle from './components/MapToggle';
-import { useMapStore, useApiKeys } from './lib/state';
+import { useMapStore, useApiKeys, useUI } from './lib/state';
 import { MapController } from './lib/map-controller';
 
 // API keys are now loaded from localStorage via useApiKeys store
@@ -61,6 +61,7 @@ function AppComponent({ geminiApiKey }: { geminiApiKey: string }) {
   const [viewProps, setViewProps] = useState(INITIAL_VIEW_PROPS);
   // Subscribe to marker and camera state from the global Zustand store.
   const { markers, cameraTarget, setCameraTarget, preventAutoFrame, mapMode } = useMapStore();
+  const { isChatVisible } = useUI();
   const mapController = useRef<MapController | null>(null);
 
   const maps3dLib = useMapsLibrary('maps3d');
@@ -248,12 +249,13 @@ function AppComponent({ geminiApiKey }: { geminiApiKey: string }) {
       <ErrorScreen />
       <Sidebar />
       {showPopUp && <PopUp onClose={handleClosePopUp} />}
-      <div className="streaming-console">
-        <div className="console-panel" ref={consolePanelRef}>
-          <StreamingConsole />
-          <ControlTray trayRef={controlTrayRef} />
-        </div>
-        <div className="map-panel">
+      <div className={`streaming-console ${!isChatVisible ? 'chat-hidden' : ''}`}>
+        {isChatVisible && (
+          <div className="console-panel" ref={consolePanelRef}>
+            <StreamingConsole />
+          </div>
+        )}
+        <div className={`map-panel ${!isChatVisible ? 'full-screen' : ''}`}>
           <MapToggle />
           {mapMode === '3d' ? (
             <Map3D
@@ -269,6 +271,7 @@ function AppComponent({ geminiApiKey }: { geminiApiKey: string }) {
             />
           )}
         </div>
+        <ControlTray trayRef={controlTrayRef} />
       </div>
     </LiveAPIProvider>
   );
