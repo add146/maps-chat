@@ -78,6 +78,21 @@ function ControlTray({ trayRef }: ControlTrayProps) {
     }
   }, [connected]);
 
+  // Auto-connect when user location is obtained from popup
+  useEffect(() => {
+    const handleAutoConnect = () => {
+      if (!connected) {
+        connect();
+        setMuted(false); // Enable microphone
+      }
+    };
+
+    window.addEventListener('autoConnectAgent', handleAutoConnect);
+    return () => {
+      window.removeEventListener('autoConnectAgent', handleAutoConnect);
+    };
+  }, [connected, connect]);
+
   useEffect(() => {
     const onData = (base64: string) => {
       client.sendRealtimeInput([
