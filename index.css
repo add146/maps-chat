@@ -462,6 +462,28 @@ gmp-place-details-compact {
   justify-content: center;
 }
 
+/* Distance filter button */
+.distance-button {
+  min-width: auto !important;
+  padding: 0 8px !important;
+}
+
+.distance-label {
+  font-size: 10px;
+  font-weight: bold;
+  color: var(--Blue-400);
+}
+
+@media (max-width: 480px) {
+  .distance-label {
+    font-size: 8px;
+  }
+
+  .distance-button {
+    padding: 0 4px !important;
+  }
+}
+
 .control-tray .disabled .action-button,
 .control-tray .action-button.disabled {
   background: rgba(0, 0, 0, 0);

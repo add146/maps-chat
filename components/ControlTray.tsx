@@ -55,7 +55,7 @@ function ControlTray({ trayRef }: ControlTrayProps) {
   const [muted, setMuted] = useState(true);
   const [textPrompt, setTextPrompt] = useState('');
   const connectButtonRef = useRef<HTMLButtonElement>(null);
-  const { toggleSidebar, isChatVisible, toggleChat } = useUI();
+  const { toggleSidebar, isChatVisible, toggleChat, searchDistance, setSearchDistance } = useUI();
   const { activateEasterEggMode } = useSettings();
   const settingsClickTimestamps = useRef<number[]>([]);
   const isMobile = useMediaQuery('(max-width: 768px), (orientation: landscape) and (max-height: 768px)');
@@ -88,8 +88,9 @@ function ControlTray({ trayRef }: ControlTrayProps) {
         // If location was provided, send it to agent after connection
         if (event.detail) {
           const { lat, lng } = event.detail;
+          const distance = useUI.getState().searchDistance;
           setTimeout(() => {
-            client.sendRealtimeText(`Lokasi saya saat ini adalah koordinat ${lat.toFixed(6)}, ${lng.toFixed(6)}. Tolong cari tempat menarik dan rekomendasi makanan di sekitar lokasi tersebut.`);
+            client.sendRealtimeText(`Lokasi saya saat ini adalah koordinat ${lat.toFixed(6)}, ${lng.toFixed(6)}. Tolong cari tempat menarik dan rekomendasi makanan dalam radius ${distance} km dari lokasi tersebut.`);
           }, 2000);
         }
       }
@@ -288,9 +289,10 @@ function ControlTray({ trayRef }: ControlTrayProps) {
                     setTimeout(() => {
                       connect();
                       setMuted(false);
-                      // Send location to agent
+                      // Send location to agent with distance
+                      const distance = searchDistance;
                       setTimeout(() => {
-                        client.sendRealtimeText(`Lokasi saya saat ini adalah koordinat ${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}. Tolong cari tempat menarik dan rekomendasi makanan di sekitar lokasi tersebut.`);
+                        client.sendRealtimeText(`Lokasi saya saat ini adalah koordinat ${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}. Tolong cari tempat menarik dan rekomendasi makanan dalam radius ${distance} km dari lokasi tersebut.`);
                       }, 2000);
                     }, 500);
                   }
@@ -314,6 +316,20 @@ function ControlTray({ trayRef }: ControlTrayProps) {
           aria-label="Settings"
         >
           <span className="icon">tune</span>
+        </button>
+        <button
+          className={cn('action-button distance-button')}
+          onClick={() => {
+            // Cycle through distances: 2 -> 5 -> 10 -> 2
+            const distances = [2, 5, 10];
+            const currentIndex = distances.indexOf(searchDistance);
+            const nextIndex = (currentIndex + 1) % distances.length;
+            setSearchDistance(distances[nextIndex]);
+          }}
+          title={`Jarak pencarian: ${searchDistance}km`}
+          aria-label={`Jarak pencarian: ${searchDistance}km`}
+        >
+          <span className="distance-label">{searchDistance}km</span>
         </button>
       </nav>
     </section>

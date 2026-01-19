@@ -102,6 +102,8 @@ export const useUI = create<{
   toggleShowSystemMessages: () => void;
   isChatVisible: boolean;
   toggleChat: () => void;
+  searchDistance: number; // in km
+  setSearchDistance: (distance: number) => void;
 }>(set => ({
   isSidebarOpen: false,
   toggleSidebar: () => set(state => ({ isSidebarOpen: !state.isSidebarOpen })),
@@ -110,6 +112,8 @@ export const useUI = create<{
     set(state => ({ showSystemMessages: !state.showSystemMessages })),
   isChatVisible: true,
   toggleChat: () => set(state => ({ isChatVisible: !state.isChatVisible })),
+  searchDistance: 5, // default 5km
+  setSearchDistance: (distance: number) => set({ searchDistance: distance }),
 }));
 
 /**
