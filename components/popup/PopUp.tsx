@@ -30,8 +30,11 @@ const PopUp: React.FC<PopUpProps> = ({ onClose }) => {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
-        setIsLoading(false);
-        onClose(coords);
+        // Keep loading state for a moment to let map update
+        setTimeout(() => {
+          setIsLoading(false);
+          onClose(coords);
+        }, 500);
       },
       (err) => {
         setIsLoading(false);
