@@ -604,6 +604,8 @@ gmp-place-details-compact {
   height: 100%;
   overflow-y: auto;
   padding: 20px;
+  padding-bottom: 100px;
+  /* Space for control tray */
   display: flex;
   flex-direction: column;
   gap: 20px;
