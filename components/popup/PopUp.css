@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.85);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -16,95 +16,110 @@
   color: var(--text);
   padding: 30px;
   border-radius: 16px;
-  max-width: 600px;
+  max-width: 400px;
   width: 90%;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   border: 1px solid var(--border-stroke);
+  text-align: center;
+}
+
+.popup-content.location-popup {
+  padding: 40px 30px;
+}
+
+.popup-icon {
+  margin-bottom: 20px;
+}
+
+.popup-icon .material-symbols-outlined {
+  font-size: 64px;
+  color: #EA4335;
 }
 
 .popup-content h2 {
   margin-top: 0;
   color: var(--accent-blue-headers);
-  font-size: 24px;
-  margin-bottom: 20px;
+  font-size: 28px;
+  margin-bottom: 15px;
 }
 
 .popup-content p {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   line-height: 1.6;
+  color: var(--gray-300);
 }
 
-.popup-content ol {
-  padding-left: 20px;
-  margin-bottom: 30px;
+.error-text {
+  color: #EA4335 !important;
+  font-size: 14px;
+  margin-bottom: 15px !important;
 }
 
-.popup-content li {
-  margin-bottom: 15px;
-  display: flex;
-  align-items: flex-start;
-}
-
-.popup-content .icon {
-  margin-right: 15px;
-  font-size: 24px;
-  color: var(--accent-blue);
-}
-
-.popup-content button {
-  background-color: var(--Blue-500);
-  color: var(--Neutral-5);
+.location-button {
+  background: linear-gradient(135deg, #4285F4, #34A853);
+  color: white;
   border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
+  padding: 16px 32px;
+  border-radius: 30px;
   cursor: pointer;
-  float: right;
   font-weight: bold;
-  transition: background-color 0.2s;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+  justify-content: center;
 }
 
-.popup-content button:hover {
-  background-color: var(--Blue-400);
+.location-button:hover:not(:disabled) {
+  transform: scale(1.02);
+  box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4);
+}
+
+.location-button:disabled {
+  opacity: 0.8;
+  cursor: wait;
+}
+
+.location-button .material-symbols-outlined {
+  font-size: 24px;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 768px) {
   .popup-content {
-    padding: 20px;
-    max-height: 85vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden; /* The main container doesn't scroll */
+    padding: 25px 20px;
+    max-width: 340px;
   }
 
-  .popup-scrollable-content {
-    overflow-y: auto; /* This part scrolls if content is too tall */
-    flex-grow: 1; /* It takes up the available vertical space */
+  .popup-icon .material-symbols-outlined {
+    font-size: 56px;
   }
 
   .popup-content h2 {
-    font-size: 20px;
-    flex-shrink: 0; /* Prevent the header from shrinking */
+    font-size: 24px;
   }
 
-  .popup-content p,
-  .popup-content li {
+  .popup-content p {
     font-size: 14px;
   }
 
-  .popup-content li {
-    margin-bottom: 12px;
-  }
-
-  .popup-content .icon {
-    font-size: 20px;
-    margin-right: 10px;
-  }
-
-  .popup-content button {
-    width: 100%;
-    float: none;
-    margin-top: 10px;
-    padding: 14px 20px;
-    flex-shrink: 0; /* Prevent the button from shrinking */
+  .location-button {
+    padding: 14px 24px;
+    font-size: 15px;
   }
 }

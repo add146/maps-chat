@@ -3,51 +3,77 @@
  * SPDX-License-Identifier: Apache-2.0
 */
 
-// FIX: Added FC to the React import.
-import React, { FC } from 'react';
+import React, { useState } from 'react';
 import './PopUp.css';
 
 interface PopUpProps {
-  onClose: () => void;
+  onClose: (coords?: { lat: number; lng: number }) => void;
 }
 
 const PopUp: React.FC<PopUpProps> = ({ onClose }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleGetLocation = () => {
+    setIsLoading(true);
+    setError(null);
+
+    if (!navigator.geolocation) {
+      setError('Browser tidak mendukung geolocation');
+      setIsLoading(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const coords = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        setIsLoading(false);
+        onClose(coords);
+      },
+      (err) => {
+        setIsLoading(false);
+        setError('Gagal mendapatkan lokasi. Pastikan izin lokasi diaktifkan.');
+        console.error('Geolocation error:', err);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    );
+  };
+
   return (
     <div className="popup-overlay">
-      <div className="popup-content">
-        <h2>Selamat Datang di Perencana Hari Interaktif</h2>
-        <div className="popup-scrollable-content">
-          <p>
-            Demo interaktif ini menampilkan kemampuan Gemini dan Grounding dengan Google Maps untuk melakukan percakapan real-time berbasis suara.
-            Rencanakan perjalanan sehari menggunakan bahasa natural dan rasakan bagaimana Gemini memanfaatkan Google Maps untuk memberikan informasi yang akurat dan terkini.
-          </p>
-          <p>Untuk memulai:</p>
-          <ol>
-            <li>
-              <span className="icon">play_circle</span>
-              <div>Tekan tombol <strong>&nbsp; Play &nbsp;</strong> untuk memulai percakapan.</div>
-            </li>
-            <li>
-              <span className="icon">record_voice_over</span>
-              <div><strong>Bicara dengan natural &nbsp;</strong>untuk merencanakan perjalanan. Coba katakan,
-                "Ayo rencanakan perjalanan ke Bali."</div>
-            </li>
-            <li>
-              <span className="icon">map</span>
-              <div>Lihat bagaimana peta <strong>&nbsp; diperbarui secara dinamis &nbsp;</strong> dengan
-                lokasi dari itinerary kamu.</div>
-            </li>
-            <li>
-              <span className="icon">keyboard</span>
-              <div>Atau, <strong>&nbsp; ketik permintaan kamu &nbsp;</strong> di kotak pesan.</div>
-            </li>
-            <li>
-              <span className="icon">tune</span>
-              <div>Klik ikon <strong>&nbsp; Pengaturan &nbsp;</strong> untuk menyesuaikan suara dan perilaku AI.</div>
-            </li>
-          </ol>
+      <div className="popup-content location-popup">
+        <div className="popup-icon">
+          <span className="material-symbols-outlined">location_on</span>
         </div>
-        <button onClick={onClose}>Mengerti, Ayo Mulai!</button>
+        <h2>Halo! 👋</h2>
+        <p>Izinkan saya mengetahui lokasimu untuk memberikan rekomendasi tempat menarik dan makanan enak di sekitarmu.</p>
+
+        {error && <p className="error-text">{error}</p>}
+
+        <button
+          onClick={handleGetLocation}
+          disabled={isLoading}
+          className="location-button"
+        >
+          {isLoading ? (
+            <>
+              <span className="material-symbols-outlined spinning">sync</span>
+              Mencari lokasi...
+            </>
+          ) : (
+            <>
+              <span className="material-symbols-outlined">my_location</span>
+              Cari Posisiku
+            </>
+          )}
+        </button>
       </div>
     </div>
   );

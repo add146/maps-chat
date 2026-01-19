@@ -67,7 +67,8 @@ function AppComponent({ geminiApiKey }: { geminiApiKey: string }) {
   const maps3dLib = useMapsLibrary('maps3d');
   const elevationLib = useMapsLibrary('elevation');
 
-  const [showPopUp, setShowPopUp] = useState(false);
+  const [showPopUp, setShowPopUp] = useState(true);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
 
   const consolePanelRef = useRef<HTMLDivElement>(null);
   const controlTrayRef = useRef<HTMLElement>(null);
@@ -175,10 +176,6 @@ function AppComponent({ geminiApiKey }: { geminiApiKey: string }) {
     };
   }, []);
 
-  const handleClosePopUp = () => {
-    setShowPopUp(false);
-  };
-
   useEffect(() => {
     if (map) {
       const banner = document.querySelector(
@@ -231,6 +228,23 @@ function AppComponent({ geminiApiKey }: { geminiApiKey: string }) {
       useMapStore.getState().setPreventAutoFrame(false);
     }
   }, [cameraTarget, setCameraTarget]);
+
+  // Handle popup close with optional location coordinates
+  const handleClosePopUp = useCallback((coords?: { lat: number; lng: number }) => {
+    setShowPopUp(false);
+    if (coords) {
+      setUserLocation(coords);
+      setViewProps(prev => ({
+        ...prev,
+        center: {
+          lat: coords.lat,
+          lng: coords.lng,
+          altitude: 1000
+        }
+      }));
+      console.log('User location from popup:', coords);
+    }
+  }, []);
 
 
   const handleCameraChange = useCallback((props: Map3DCameraProps) => {
