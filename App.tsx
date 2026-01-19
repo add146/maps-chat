@@ -234,17 +234,21 @@ function AppComponent({ geminiApiKey }: { geminiApiKey: string }) {
     setShowPopUp(false);
     if (coords) {
       setUserLocation(coords);
-      setViewProps(prev => ({
-        ...prev,
+      // Use setCameraTarget to trigger actual camera flight to user location
+      setCameraTarget({
         center: {
           lat: coords.lat,
           lng: coords.lng,
-          altitude: 1000
-        }
-      }));
-      console.log('User location from popup:', coords);
+          altitude: 500
+        },
+        range: 2000,
+        heading: 0,
+        tilt: 45,
+        roll: 0
+      });
+      console.log('Flying to user location:', coords);
     }
-  }, []);
+  }, [setCameraTarget]);
 
 
   const handleCameraChange = useCallback((props: Map3DCameraProps) => {
