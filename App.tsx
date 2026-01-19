@@ -234,7 +234,16 @@ function AppComponent({ geminiApiKey }: { geminiApiKey: string }) {
     setShowPopUp(false);
     if (coords) {
       setUserLocation(coords);
-      // Use setCameraTarget to trigger actual camera flight to user location
+      // Update viewProps for Map2D
+      setViewProps(prev => ({
+        ...prev,
+        center: {
+          lat: coords.lat,
+          lng: coords.lng,
+          altitude: 500
+        }
+      }));
+      // Use setCameraTarget to trigger actual camera flight for Map3D
       setCameraTarget({
         center: {
           lat: coords.lat,
