@@ -261,9 +261,9 @@ function AppComponent({ geminiApiKey }: { geminiApiKey: string }) {
       });
       console.log('Flying to user location:', coords);
 
-      // Auto-connect agent after short delay for map to settle
+      // Auto-connect agent after short delay for map to settle, with location data
       setTimeout(() => {
-        window.dispatchEvent(new CustomEvent('autoConnectAgent'));
+        window.dispatchEvent(new CustomEvent('autoConnectAgent', { detail: coords }));
       }, 1000);
     }
   }, [setCameraTarget]);

@@ -80,18 +80,26 @@ function ControlTray({ trayRef }: ControlTrayProps) {
 
   // Auto-connect when user location is obtained from popup
   useEffect(() => {
-    const handleAutoConnect = () => {
+    const handleAutoConnect = (event: CustomEvent<{ lat: number; lng: number } | undefined>) => {
       if (!connected) {
         connect();
         setMuted(false); // Enable microphone
+
+        // If location was provided, send it to agent after connection
+        if (event.detail) {
+          const { lat, lng } = event.detail;
+          setTimeout(() => {
+            client.sendRealtimeText(`Lokasi saya saat ini adalah koordinat ${lat.toFixed(6)}, ${lng.toFixed(6)}. Tolong cari tempat menarik dan rekomendasi makanan di sekitar lokasi tersebut.`);
+          }, 2000);
+        }
       }
     };
 
-    window.addEventListener('autoConnectAgent', handleAutoConnect);
+    window.addEventListener('autoConnectAgent', handleAutoConnect as EventListener);
     return () => {
-      window.removeEventListener('autoConnectAgent', handleAutoConnect);
+      window.removeEventListener('autoConnectAgent', handleAutoConnect as EventListener);
     };
-  }, [connected, connect]);
+  }, [connected, connect, client]);
 
   useEffect(() => {
     const onData = (base64: string) => {
@@ -280,6 +288,10 @@ function ControlTray({ trayRef }: ControlTrayProps) {
                     setTimeout(() => {
                       connect();
                       setMuted(false);
+                      // Send location to agent
+                      setTimeout(() => {
+                        client.sendRealtimeText(`Lokasi saya saat ini adalah koordinat ${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}. Tolong cari tempat menarik dan rekomendasi makanan di sekitar lokasi tersebut.`);
+                      }, 2000);
                     }, 500);
                   }
                 },
