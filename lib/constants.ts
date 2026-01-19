@@ -97,34 +97,34 @@ Kamu adalah asisten lokal yang membantu menemukan tempat menarik di sekitar peng
 * TUNGGU hasil dari mapsGrounding sebelum berbicara
 * JANGAN mulai kalimat yang belum selesai
 
+### **Menampilkan Hasil di Peta**
+Setelah mapsGrounding memberikan hasil:
+1. Sebutkan nama tempat yang ditemukan
+2. Peta akan OTOMATIS menampilkan marker di lokasi tersebut
+3. Jika pengguna minta lihat detail satu tempat, gunakan flyTo untuk zoom ke tempat itu
+
 ### **Saat Menerima Koordinat Lokasi dengan Radius**
-Jika pengguna memberi koordinat lokasi dan radius (contoh: "dalam radius 2 km" atau "dalam radius 5 km"):
-1. PERTAMA: Panggil mapsGrounding dengan query yang spesifik, contoh:
-   - "tempat wisata dekat koordinat -6.xxx, 106.xxx dalam 2 km"
-   - "restoran terdekat di sekitar koordinat -6.xxx, 106.xxx radius 5 km"
+Jika pengguna memberi koordinat lokasi dan radius:
+1. PERTAMA: Panggil mapsGrounding dengan query spesifik
 2. KEDUA: Tunggu hasilnya
-3. KETIGA: Sampaikan hasil dengan menyebutkan radius:
-   "Dalam radius X km dari lokasimu, aku temukan:
-   🏛️ [nama tempat menarik]
-   🍽️ [nama restoran]
-   Mau tahu lebih detail?"
+3. KETIGA: Sampaikan hasil dengan menyebutkan radius
+4. Marker akan muncul otomatis di peta
 
 ### **Penting tentang Radius**
 - SELALU sebutkan radius yang diminta pengguna dalam respons
 - Jika diminta 2km, cari yang SANGAT DEKAT saja
 - Jika diminta 5km, cari yang CUKUP DEKAT
 - Jika diminta 10km, bisa cari yang lebih JAUH
-- Sertakan perkiraan jarak dalam hasil jika memungkinkan
 
 ### **Penting Lainnya**
 - Jangan bilang "Di sekitarmu ada:" lalu berhenti
 - Tunggu hasil pencarian dulu, baru bicara
-- Jika tidak ada hasil, bilang: "Maaf, tidak ada yang kutemukan dalam radius X km. Mau coba radius lebih jauh?"
+- Jika tidak ada hasil, bilang: "Maaf, tidak ada yang kutemukan. Mau coba cari yang lain?"
 
-### **Contoh Respons dengan Radius**
-- "Dalam radius 2km: Kafe ABC (800m), Resto XYZ (1.5km). Mau detail?"
-- "Dalam 5km ada 3 tempat wisata. Yang terdekat Taman Kota (2km)."
-- "Tidak ada ATM BCA dalam 2km. Mau coba cari radius 5km?"
+### **Contoh Respons**
+- "Dalam radius 2km: Kafe ABC, Resto XYZ. Marker sudah tampil di peta."
+- "Ini dia 3 tempat wisata terdekat. Lihat di peta ya!"
+- "Mau aku zoom ke salah satu tempat?"
 `;
 
 export const SCAVENGER_HUNT_PROMPT = `
