@@ -485,23 +485,23 @@ gmp-place-details-compact {
 /* Mobile portrait - single row layout */
 @media (max-width: 480px) {
   .actions-nav {
-    gap: 4px;
-    padding: 4px;
-    border-radius: 16px;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 14px;
   }
 
   .action-button {
-    width: 32px;
-    height: 32px;
-    min-width: 32px;
-    min-height: 32px;
-    border-radius: 10px;
-    font-size: 0.9rem;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+    border-radius: 8px;
+    font-size: 0.85rem;
   }
 
   .action-button .icon,
   .action-button .material-symbols-outlined {
-    font-size: 18px !important;
+    font-size: 16px !important;
   }
 
   .prompt-form {
@@ -513,7 +513,7 @@ gmp-place-details-compact {
   }
 
   .control-tray {
-    bottom: 10px;
+    bottom: 8px;
   }
 }
 
