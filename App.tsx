@@ -234,7 +234,7 @@ function AppComponent({ geminiApiKey }: { geminiApiKey: string }) {
     setShowPopUp(false);
     if (coords) {
       setUserLocation(coords);
-      // Update viewProps for Map2D
+      // Update viewProps for Map2D initial render
       setViewProps(prev => ({
         ...prev,
         center: {
@@ -242,6 +242,10 @@ function AppComponent({ geminiApiKey }: { geminiApiKey: string }) {
           lng: coords.lng,
           altitude: 500
         }
+      }));
+      // Dispatch centerToLocation event for Map2D to pan to location
+      window.dispatchEvent(new CustomEvent('centerToLocation', {
+        detail: { lat: coords.lat, lng: coords.lng }
       }));
       // Use setCameraTarget to trigger actual camera flight for Map3D
       setCameraTarget({
