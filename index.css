@@ -622,6 +622,8 @@ gmp-place-details-compact {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-bottom: 80px;
+  /* Space for control tray */
 }
 
 .transcription-view {
@@ -630,8 +632,8 @@ gmp-place-details-compact {
   height: 100%;
   overflow-y: auto;
   padding: 20px;
-  padding-bottom: 100px;
-  /* Space for control tray */
+  padding-bottom: 80px;
+  /* Additional space for control tray */
   display: flex;
   flex-direction: column;
   gap: 20px;
