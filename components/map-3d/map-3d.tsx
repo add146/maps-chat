@@ -21,17 +21,18 @@
  * limitations under the License.
  */
 
-import {useMapsLibrary} from '@vis.gl/react-google-maps';
-// FIX: Added missing React imports.
+import { useMapsLibrary } from '@vis.gl/react-google-maps';
 import React, {
   ForwardedRef,
   forwardRef,
   useEffect,
   useImperativeHandle,
-  useState
+  useState,
+  useRef
 } from 'react';
-import {useMap3DCameraEvents} from './use-map-3d-camera-events';
-import {useCallbackRef, useDeepCompareEffect} from './utility-hooks';
+import { useMap3DCameraEvents } from './use-map-3d-camera-events';
+import { useCallbackRef, useDeepCompareEffect } from './utility-hooks';
+import { useMapStore } from '../../lib/state';
 
 import './map-3d-types';
 
@@ -57,6 +58,10 @@ export const Map3D = forwardRef(
     const [map3DElement, map3dRef] =
       useCallbackRef<google.maps.maps3d.Map3DElement>();
 
+    // Get markers from store
+    const markers = useMapStore(state => state.markers);
+    const markersRef = useRef<any[]>([]);
+
     useMap3DCameraEvents(map3DElement, p => {
       if (!props.onCameraChange) return;
 
@@ -70,7 +75,47 @@ export const Map3D = forwardRef(
       });
     }, []);
 
-    const {center, heading, tilt, range, roll, ...map3dOptions} = props;
+    // Render 3D markers when markers change
+    useEffect(() => {
+      if (!map3DElement || !customElementsReady) return;
+
+      // Clear existing markers
+      markersRef.current.forEach(marker => {
+        if (marker.parentNode) {
+          marker.parentNode.removeChild(marker);
+        }
+      });
+      markersRef.current = [];
+
+      // Add new markers
+      markers.forEach((marker, index) => {
+        try {
+          const markerElement = document.createElement('gmp-marker-3d');
+          markerElement.setAttribute('position', `${marker.position.lat},${marker.position.lng}`);
+          markerElement.setAttribute('altitude-mode', 'RELATIVE_TO_GROUND');
+          markerElement.setAttribute('extruded', 'true');
+          if (marker.label) {
+            markerElement.setAttribute('title', marker.label);
+          }
+          map3DElement.appendChild(markerElement);
+          markersRef.current.push(markerElement);
+        } catch (e) {
+          console.error('Error creating 3D marker:', e);
+        }
+      });
+
+      return () => {
+        // Cleanup markers on unmount
+        markersRef.current.forEach(marker => {
+          if (marker.parentNode) {
+            marker.parentNode.removeChild(marker);
+          }
+        });
+        markersRef.current = [];
+      };
+    }, [map3DElement, markers, customElementsReady]);
+
+    const { center, heading, tilt, range, roll, ...map3dOptions } = props;
 
     useDeepCompareEffect(() => {
       if (!map3DElement) return;
@@ -94,7 +139,6 @@ export const Map3D = forwardRef(
         heading={heading}
         tilt={tilt}
         roll={roll}
-        // FIX: Removed unused @ts-expect-error as type is now defined.
         defaultUIHidden={true}
         mode="SATELLITE"></gmp-map-3d>
     );
